@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Heart, Menu } from "lucide-react";
 import { useState } from "react";
@@ -35,9 +36,11 @@ const Navbar = () => {
             <Button variant="ghost" className="text-foreground">
               Log In
             </Button>
-            <Button variant="default" className="bg-primary hover:bg-primary/90">
-              Get Started
-            </Button>
+            <Link to="/welcome">
+              <Button variant="default" className="bg-primary hover:bg-primary/90">
+                Get Started
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -65,9 +68,11 @@ const Navbar = () => {
               <Button variant="ghost" className="w-full">
                 Log In
               </Button>
-              <Button variant="default" className="w-full bg-primary hover:bg-primary/90">
-                Get Started
-              </Button>
+              <Link to="/welcome">
+                <Button variant="default" className="w-full bg-primary hover:bg-primary/90">
+                  Get Started
+                </Button>
+              </Link>
             </div>
           </div>
         )}

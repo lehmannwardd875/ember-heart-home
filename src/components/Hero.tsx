@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-couple.jpg";
 import { Heart } from "lucide-react";
@@ -37,13 +38,15 @@ const Hero = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button 
-                size="lg" 
-                variant="secondary"
-                className="text-lg px-8 py-6 shadow-warm hover:scale-105 transition-all"
-              >
-                Start Your Journey
-              </Button>
+              <Link to="/welcome">
+                <Button 
+                  size="lg" 
+                  variant="secondary"
+                  className="text-lg px-8 py-6 shadow-warm hover:scale-105 transition-all"
+                >
+                  Start Your Journey
+                </Button>
+              </Link>
               <Button 
                 size="lg" 
                 variant="outline"

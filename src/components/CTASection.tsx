@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
 
@@ -32,13 +33,15 @@ const CTASection = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
-            <Button
-              size="lg"
-              variant="secondary"
-              className="text-lg px-10 py-7 shadow-warm hover:scale-105 transition-all font-semibold"
-            >
-              Begin Your Story
-            </Button>
+            <Link to="/welcome">
+              <Button
+                size="lg"
+                variant="secondary"
+                className="text-lg px-10 py-7 shadow-warm hover:scale-105 transition-all font-semibold"
+              >
+                Begin Your Story
+              </Button>
+            </Link>
             <Button
               size="lg"
               variant="outline"

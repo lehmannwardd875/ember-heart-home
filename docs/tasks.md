@@ -13,12 +13,12 @@
 - [✓] Design system (colors, typography, spacing)
 - [✓] Component library setup
 
-### Phase 2: Core Pages & Navigation
-- [ ] Multi-page routing setup
-- [ ] Welcome/Onboarding flow
-- [ ] Mock verification flow
-- [ ] Narrative profile builder
-- [ ] Settings page
+### Phase 2: Core Pages & Navigation ✓
+- [✓] Multi-page routing setup
+- [✓] Welcome/Onboarding flow
+- [✓] Mock verification flow
+- [✓] Narrative profile builder
+- [✓] Settings page
 
 ### Phase 3: Reflection & Matching (Backend Required)
 - [ ] Enable Lovable Cloud
@@ -56,7 +56,7 @@
 ## 📦 PHASE 2: CORE PAGES & NAVIGATION
 
 ### Task 2.1: Multi-Page Routing Setup
-**Status:** [ ]  
+**Status:** [✓] COMPLETED  
 **Priority:** High  
 **Dependencies:** None  
 **Estimated Time:** 30 min
@@ -83,15 +83,15 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 ```
 
 **Subtasks:**
-- [ ] Create route structure in App.tsx
-- [ ] Add protected route wrapper (for post-auth pages)
-- [ ] Create placeholder pages for all routes
-- [ ] Test navigation between pages
+- [✓] Create route structure in App.tsx
+- [ ] Add protected route wrapper (for post-auth pages) - Phase 3
+- [✓] Create placeholder pages for all routes
+- [✓] Test navigation between pages
 
 ---
 
 ### Task 2.2: Welcome/Onboarding Flow
-**Status:** [ ]  
+**Status:** [✓] COMPLETED  
 **Priority:** High  
 **Dependencies:** 2.1  
 **Estimated Time:** 2 hours
@@ -132,17 +132,17 @@ const onboardingSchema = z.object({
 ```
 
 **Subtasks:**
-- [ ] Create `/src/pages/Welcome.tsx`
-- [ ] Design form with warm, spacious layout
-- [ ] Add form validation with Zod
-- [ ] Store data in localStorage temporarily (until backend)
-- [ ] Create smooth transition to verification page
-- [ ] Add "Skip for now" option that goes to profile builder
+- [✓] Create `/src/pages/Welcome.tsx`
+- [✓] Design form with warm, spacious layout
+- [✓] Add form validation with Zod
+- [✓] Store data in localStorage temporarily (until backend)
+- [✓] Create smooth transition to verification page
+- [✓] Add "Skip for now" option that goes to profile builder
 
 ---
 
 ### Task 2.3: Mock Verification Flow
-**Status:** [ ]  
+**Status:** [✓] COMPLETED  
 **Priority:** High  
 **Dependencies:** 2.2  
 **Estimated Time:** 2 hours
@@ -208,18 +208,18 @@ const videoGuidelines = [
 ```
 
 **Subtasks:**
-- [ ] Create `/src/pages/Verification.tsx`
-- [ ] Add file upload components for selfie & video
-- [ ] Create step-by-step flow with progress indicator
-- [ ] Design success animation (warm ember glow)
-- [ ] Add optional LinkedIn URL input
-- [ ] Store mock verification status
-- [ ] Create transition to profile builder
+- [✓] Create `/src/pages/Verification.tsx`
+- [✓] Add file upload components for selfie & video
+- [✓] Create step-by-step flow with progress indicator
+- [✓] Design success animation (warm ember glow)
+- [✓] Add optional LinkedIn URL input
+- [✓] Store mock verification status
+- [✓] Create transition to profile builder
 
 ---
 
 ### Task 2.4: Narrative Profile Builder
-**Status:** [ ]  
+**Status:** [✓] COMPLETED  
 **Priority:** High  
 **Dependencies:** 2.3  
 **Estimated Time:** 4 hours
@@ -301,20 +301,20 @@ const profileSchema = z.object({
 - Preview Button: "See How Your Story Reads"
 
 **Subtasks:**
-- [ ] Create `/src/pages/ProfileBuilder.tsx`
-- [ ] Design multi-step form with progress indicator
-- [ ] Add all input fields with validation
-- [ ] Create taste cards input (dynamic add/remove)
-- [ ] Design preview mode with story-like layout
-- [ ] Add save draft functionality (localStorage)
-- [ ] Create smooth transitions between sections
-- [ ] Add hand-drawn accent line SVGs
-- [ ] Implement character counters for length limits
+- [✓] Create `/src/pages/ProfileBuilder.tsx`
+- [✓] Design multi-step form with progress indicator
+- [✓] Add all input fields with validation
+- [✓] Create taste cards input (dynamic add/remove)
+- [✓] Design preview mode with story-like layout
+- [✓] Add save draft functionality (localStorage)
+- [✓] Create smooth transitions between sections
+- [ ] Add hand-drawn accent line SVGs (future polish)
+- [✓] Implement character counters for length limits
 
 ---
 
 ### Task 2.5: Settings Page
-**Status:** [ ]  
+**Status:** [✓] COMPLETED  
 **Priority:** Medium  
 **Dependencies:** 2.4  
 **Estimated Time:** 2 hours
@@ -346,12 +346,12 @@ const profileSchema = z.object({
 - Invisible Mode with clear explanation: "Take a break from new matches while staying connected with current conversations"
 
 **Subtasks:**
-- [ ] Create `/src/pages/Settings.tsx`
-- [ ] Design settings sections layout
-- [ ] Add privacy toggles
-- [ ] Create preferences form
-- [ ] Add verification badge display
-- [ ] Implement localStorage for settings (until backend)
+- [✓] Create `/src/pages/Settings.tsx`
+- [✓] Design settings sections layout
+- [✓] Add privacy toggles
+- [✓] Create preferences form
+- [✓] Add verification badge display
+- [✓] Implement localStorage for settings (until backend)
 
 ---
 
