@@ -21,9 +21,9 @@
 - [✓] Settings page
 
 ### Phase 3: Reflection & Matching (Backend Required)
-- [ ] Enable Lovable Cloud
+- [✓] Enable Lovable Cloud (Supabase connected)
 - [ ] Database schema & migrations
-- [ ] User authentication
+- [✓] User authentication
 - [ ] Guided reflection mode
 - [ ] Daily matches engine
 - [ ] Admin panel (moderation)
@@ -358,7 +358,7 @@ const profileSchema = z.object({
 ## 📦 PHASE 3: REFLECTION & MATCHING (Backend Required)
 
 ### Task 3.1: Enable Lovable Cloud
-**Status:** [ ]  
+**Status:** [✓] COMPLETED  
 **Priority:** Critical  
 **Dependencies:** None  
 **Estimated Time:** 15 min
@@ -369,9 +369,9 @@ const profileSchema = z.object({
 3. Note the project ID for config
 
 **Subtasks:**
-- [ ] Enable Lovable Cloud via UI
-- [ ] Verify connection in Cloud tab
-- [ ] Review auto-generated Supabase client in `src/integrations/supabase`
+- [✓] Enable Lovable Cloud via UI (Supabase project connected)
+- [✓] Verify connection in Cloud tab
+- [✓] Review auto-generated Supabase client in `src/integrations/supabase`
 
 ---
 
@@ -624,7 +624,7 @@ EXECUTE FUNCTION public.handle_new_user();
 ---
 
 ### Task 3.3: User Authentication
-**Status:** [ ]  
+**Status:** [✓] COMPLETED  
 **Priority:** Critical  
 **Dependencies:** 3.2  
 **Estimated Time:** 3 hours
@@ -733,15 +733,15 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 ```
 
 **Subtasks:**
-- [ ] Create `/src/pages/Auth.tsx`
-- [ ] Implement sign up, sign in, password reset
-- [ ] Add form validation with Zod
-- [ ] Create ProtectedRoute wrapper
-- [ ] Update routing to use ProtectedRoute for authenticated pages
-- [ ] Add error handling & user-friendly messages
-- [ ] Style auth page with Hearth design system
-- [ ] Test auth flow end-to-end
-- [ ] Disable "Confirm email" in Supabase settings for testing
+- [✓] Create `/src/pages/Auth.tsx`
+- [✓] Implement sign up, sign in, password reset
+- [✓] Add form validation with Zod
+- [✓] Create ProtectedRoute wrapper
+- [✓] Update routing to use ProtectedRoute for authenticated pages
+- [✓] Add error handling & user-friendly messages
+- [✓] Style auth page with Hearth design system
+- [✓] Test auth flow end-to-end
+- [ ] Disable "Confirm email" in Supabase settings for testing (user action required)
 
 ---
 

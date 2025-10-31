@@ -33,10 +33,12 @@ const Navbar = () => {
 
           {/* Desktop Buttons */}
           <div className="hidden md:flex items-center gap-4">
-            <Button variant="ghost" className="text-foreground">
-              Log In
-            </Button>
-            <Link to="/welcome">
+            <Link to="/auth">
+              <Button variant="ghost" className="text-foreground">
+                Log In
+              </Button>
+            </Link>
+            <Link to="/auth">
               <Button variant="default" className="bg-primary hover:bg-primary/90">
                 Get Started
               </Button>
@@ -65,10 +67,12 @@ const Navbar = () => {
               Safety
             </a>
             <div className="pt-4 space-y-3">
-              <Button variant="ghost" className="w-full">
-                Log In
-              </Button>
-              <Link to="/welcome">
+              <Link to="/auth">
+                <Button variant="ghost" className="w-full">
+                  Log In
+                </Button>
+              </Link>
+              <Link to="/auth">
                 <Button variant="default" className="w-full bg-primary hover:bg-primary/90">
                   Get Started
                 </Button>
