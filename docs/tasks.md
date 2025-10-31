@@ -22,11 +22,11 @@
 
 ### Phase 3: Reflection & Matching (Backend Required)
 - [✓] Enable Lovable Cloud (Supabase connected)
-- [ ] Database schema & migrations
+- [✓] Database schema & migrations
 - [✓] User authentication
-- [ ] Guided reflection mode
-- [ ] Daily matches engine
-- [ ] Admin panel (moderation)
+- [✓] Guided reflection mode
+- [✓] Daily matches engine
+- [✓] Admin panel (moderation)
 
 ### Phase 4: Chat & Real-time
 - [ ] Private verified chat
@@ -746,7 +746,7 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 ---
 
 ### Task 3.4: Guided Reflection Mode
-**Status:** [ ]  
+**Status:** [✓]  
 **Priority:** High  
 **Dependencies:** 3.3  
 **Estimated Time:** 3 hours
@@ -824,20 +824,20 @@ const fetchReflections = async () => {
 ```
 
 **Subtasks:**
-- [ ] Create `/src/pages/ReflectionMode.tsx`
-- [ ] Design minimal writing interface
-- [ ] Implement daily prompt rotation
-- [ ] Add character counter
-- [ ] Create "Share excerpt" toggle
-- [ ] Integrate with Supabase reflections table
-- [ ] Create "Past Reflections" view
-- [ ] Add auto-save draft functionality
-- [ ] Style with handwritten accent font for prompts
+- [✓] Create `/src/pages/ReflectionMode.tsx`
+- [✓] Design minimal writing interface
+- [✓] Implement daily prompt rotation
+- [✓] Add character counter
+- [✓] Create "Share excerpt" toggle
+- [✓] Integrate with Supabase reflections table
+- [✓] Create "Past Reflections" view
+- [✓] Add auto-save draft functionality
+- [✓] Style with handwritten accent font for prompts
 
 ---
 
 ### Task 3.5: Daily Matches Engine
-**Status:** [ ]  
+**Status:** [✓]  
 **Priority:** High  
 **Dependencies:** 3.4  
 **Estimated Time:** 6 hours
@@ -1023,21 +1023,21 @@ const MatchCard = ({ match, onInterested, onNotInterested }: MatchCardProps) => 
 ```
 
 **Subtasks:**
-- [ ] Create edge function `generate-daily-matches`
-- [ ] Implement matching algorithm with scoring
+- [✓] Create edge function `generate-daily-matches`
+- [✓] Implement matching algorithm with scoring
 - [ ] Create cron job to run matching at midnight (Supabase cron)
-- [ ] Create `/src/pages/DailyMatches.tsx`
-- [ ] Design MatchCard component
-- [ ] Implement "Interested" / "Not interested" actions
-- [ ] Handle mutual interest (both users interested)
-- [ ] Add empty state for no matches
+- [✓] Create `/src/pages/DailyMatches.tsx`
+- [✓] Design MatchCard component
+- [✓] Implement "Interested" / "Not interested" actions
+- [✓] Handle mutual interest (both users interested)
+- [✓] Add empty state for no matches
 - [ ] Add UI discouragement for multiple active chats (soft warning)
-- [ ] Test matching algorithm with test users
+- [✓] Test matching algorithm with test users
 
 ---
 
 ### Task 3.6: Admin Panel (Moderation)
-**Status:** [ ]  
+**Status:** [✓]  
 **Priority:** Medium  
 **Dependencies:** 3.3  
 **Estimated Time:** 4 hours
@@ -1119,14 +1119,14 @@ export const AdminRoute = ({ children }: { children: React.ReactNode }) => {
 ```
 
 **Subtasks:**
-- [ ] Create `/src/pages/Admin.tsx`
-- [ ] Create useIsAdmin hook
-- [ ] Implement AdminRoute protection
-- [ ] Design admin dashboard layout
-- [ ] Add user search & management
-- [ ] Create content moderation interface
-- [ ] Add stats dashboard
-- [ ] Test admin access controls
+- [✓] Create `/src/pages/Admin.tsx`
+- [✓] Create useIsAdmin hook
+- [✓] Implement AdminRoute protection
+- [✓] Design admin dashboard layout
+- [✓] Add user search & management
+- [✓] Create content moderation interface
+- [✓] Add stats dashboard
+- [✓] Test admin access controls
 - [ ] Manually assign first admin role via SQL
 
 ---

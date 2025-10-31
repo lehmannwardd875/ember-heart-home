@@ -1,1 +1,4 @@
 project_id = "pmqzfqokgtykuryvjnsi"
+
+[functions.generate-daily-matches]
+verify_jwt = false
