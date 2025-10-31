@@ -14,16 +14,253 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      matches: {
+        Row: {
+          created_at: string | null
+          id: string
+          match_date: string | null
+          match_score: number | null
+          mutual_values: Json | null
+          shared_reflections: Json | null
+          user1_id: string
+          user1_interest: string | null
+          user2_id: string
+          user2_interest: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          match_date?: string | null
+          match_score?: number | null
+          mutual_values?: Json | null
+          shared_reflections?: Json | null
+          user1_id: string
+          user1_interest?: string | null
+          user2_id: string
+          user2_interest?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          match_date?: string | null
+          match_score?: number | null
+          mutual_values?: Json | null
+          shared_reflections?: Json | null
+          user1_id?: string
+          user1_interest?: string | null
+          user2_id?: string
+          user2_interest?: string | null
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          match_id: string
+          read: boolean | null
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          match_id: string
+          read?: boolean | null
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          match_id?: string
+          read?: boolean | null
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          age: number
+          created_at: string | null
+          education: string | null
+          full_name: string
+          id: string
+          invisible: boolean | null
+          life_focus: string
+          linkedin_url: string | null
+          linkedin_verified: boolean | null
+          location_city: string | null
+          location_country: string | null
+          location_state: string | null
+          profession: string
+          reflection: string
+          selfie_url: string | null
+          taste_cards: Json
+          updated_at: string | null
+          user_id: string
+          verified: boolean | null
+          verified_at: string | null
+          video_intro_url: string | null
+        }
+        Insert: {
+          age: number
+          created_at?: string | null
+          education?: string | null
+          full_name: string
+          id?: string
+          invisible?: boolean | null
+          life_focus: string
+          linkedin_url?: string | null
+          linkedin_verified?: boolean | null
+          location_city?: string | null
+          location_country?: string | null
+          location_state?: string | null
+          profession: string
+          reflection: string
+          selfie_url?: string | null
+          taste_cards?: Json
+          updated_at?: string | null
+          user_id: string
+          verified?: boolean | null
+          verified_at?: string | null
+          video_intro_url?: string | null
+        }
+        Update: {
+          age?: number
+          created_at?: string | null
+          education?: string | null
+          full_name?: string
+          id?: string
+          invisible?: boolean | null
+          life_focus?: string
+          linkedin_url?: string | null
+          linkedin_verified?: boolean | null
+          location_city?: string | null
+          location_country?: string | null
+          location_state?: string | null
+          profession?: string
+          reflection?: string
+          selfie_url?: string | null
+          taste_cards?: Json
+          updated_at?: string | null
+          user_id?: string
+          verified?: boolean | null
+          verified_at?: string | null
+          video_intro_url?: string | null
+        }
+        Relationships: []
+      }
+      reflections: {
+        Row: {
+          created_at: string | null
+          id: string
+          prompt: string
+          response: string
+          shared: boolean | null
+          tone_tags: string[] | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          prompt: string
+          response: string
+          shared?: boolean | null
+          tone_tags?: string[] | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          prompt?: string
+          response?: string
+          shared?: boolean | null
+          tone_tags?: string[] | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      verified_profile_cards: {
+        Row: {
+          education: string | null
+          full_name: string | null
+          life_focus: string | null
+          linkedin_url: string | null
+          profession: string | null
+          selfie_url: string | null
+          user_id: string | null
+          verified: boolean | null
+          video_intro_url: string | null
+        }
+        Insert: {
+          education?: string | null
+          full_name?: string | null
+          life_focus?: string | null
+          linkedin_url?: string | null
+          profession?: string | null
+          selfie_url?: string | null
+          user_id?: string | null
+          verified?: boolean | null
+          video_intro_url?: string | null
+        }
+        Update: {
+          education?: string | null
+          full_name?: string | null
+          life_focus?: string | null
+          linkedin_url?: string | null
+          profession?: string | null
+          selfie_url?: string | null
+          user_id?: string | null
+          verified?: boolean | null
+          video_intro_url?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +387,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+    },
   },
 } as const
