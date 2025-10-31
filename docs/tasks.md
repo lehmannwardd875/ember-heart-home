@@ -376,7 +376,7 @@ const profileSchema = z.object({
 ---
 
 ### Task 3.2: Database Schema & Migrations
-**Status:** [ ]  
+**Status:** [✓]  
 **Priority:** Critical  
 **Dependencies:** 3.1  
 **Estimated Time:** 2 hours
@@ -615,11 +615,11 @@ EXECUTE FUNCTION public.handle_new_user();
 ```
 
 **Subtasks:**
-- [ ] Create all migrations in Supabase SQL editor
-- [ ] Test RLS policies with test users
-- [ ] Verify foreign key constraints
-- [ ] Test trigger functions
-- [ ] Document schema in comments
+- [✓] Create all migrations in Supabase SQL editor
+- [✓] Test RLS policies with test users
+- [✓] Verify foreign key constraints
+- [✓] Test trigger functions
+- [✓] Document schema in comments
 
 ---
 
