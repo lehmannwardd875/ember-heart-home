@@ -60,10 +60,11 @@ const ReflectionMode = () => {
     setFetchingPast(false);
 
     if (error) {
-      console.error('Error fetching reflections:', error);
-      toast.error('Could not load past reflections');
+      console.error('Error fetching reflections:', error.message, error);
+      toast.error(`Could not load past reflections: ${error.message}`);
     } else {
       setPastReflections(data || []);
+      console.log('Fetched reflections:', data?.length || 0);
     }
   };
 
@@ -94,11 +95,18 @@ const ReflectionMode = () => {
     setLoading(false);
 
     if (error) {
-      toast.error('Could not save reflection');
+      console.error('Error saving reflection:', error.message, error);
+      toast.error(`Could not save reflection: ${error.message}`);
     } else {
       toast.success('Reflection saved beautifully');
       setResponse('');
       setShared(false);
+      
+      // Refetch past reflections to update the list
+      await fetchPastReflections();
+      
+      // Switch to past view to show the saved reflection
+      setViewMode('past');
     }
   };
 
@@ -109,7 +117,8 @@ const ReflectionMode = () => {
       .eq('id', id);
 
     if (error) {
-      toast.error('Could not delete reflection');
+      console.error('Error deleting reflection:', error.message, error);
+      toast.error(`Could not delete reflection: ${error.message}`);
     } else {
       toast.success('Reflection deleted');
       fetchPastReflections();
