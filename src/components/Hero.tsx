@@ -20,7 +20,7 @@ const Hero = () => {
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Column - Message */}
-          <div className="text-primary-foreground space-y-8 animate-fade-in-up">
+          <div className="text-primary-foreground space-y-8 animate-fade-in-up pt-12 lg:pt-16">
             <div className="inline-flex items-center gap-2 bg-primary-foreground/10 backdrop-blur-sm px-4 py-2 rounded-full border border-primary-foreground/20">
               <Heart className="w-4 h-4 fill-current" />
               <span className="text-sm font-medium">Come home to real love</span>
