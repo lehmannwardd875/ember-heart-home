@@ -120,22 +120,13 @@ const Welcome = () => {
               />
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+            <div className="pt-4">
               <Button
                 type="submit"
                 size="lg"
-                className="flex-1 h-12 text-base"
+                className="w-full h-12 text-base"
               >
                 Begin Your Journey
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="lg"
-                className="flex-1 h-12 text-base"
-                onClick={() => navigate("/verify")}
-              >
-                Skip for Now
               </Button>
             </div>
           </form>
