@@ -38,18 +38,35 @@ const ProfileBuilder = () => {
   const [films, setFilms] = useState<string[]>([]);
   const [music, setMusic] = useState<string[]>([]);
   const [inspiration, setInspiration] = useState<string[]>([]);
-  const [newItem, setNewItem] = useState("");
+  const [newBook, setNewBook] = useState("");
+  const [newFilm, setNewFilm] = useState("");
+  const [newMusic, setNewMusic] = useState("");
+  const [newInspiration, setNewInspiration] = useState("");
 
   const progressValue = (section / 5) * 100;
 
   const addTasteItem = (category: "books" | "films" | "music" | "inspiration") => {
-    if (!newItem.trim()) return;
+    const itemValue = {
+      books: newBook,
+      films: newFilm,
+      music: newMusic,
+      inspiration: newInspiration,
+    }[category];
+
+    if (!itemValue.trim()) return;
 
     const setter = {
       books: setBooks,
       films: setFilms,
       music: setMusic,
       inspiration: setInspiration,
+    }[category];
+
+    const clearInput = {
+      books: setNewBook,
+      films: setNewFilm,
+      music: setNewMusic,
+      inspiration: setNewInspiration,
     }[category];
 
     const current = {
@@ -68,8 +85,8 @@ const ProfileBuilder = () => {
       return;
     }
 
-    setter([...current, newItem]);
-    setNewItem("");
+    setter([...current, itemValue]);
+    clearInput("");
   };
 
   const removeTasteItem = (category: "books" | "films" | "music" | "inspiration", index: number) => {
@@ -252,8 +269,8 @@ const ProfileBuilder = () => {
               <Label>Books that moved me (3-5) *</Label>
               <div className="flex gap-2">
                 <Input
-                  value={newItem}
-                  onChange={(e) => setNewItem(e.target.value)}
+                  value={newBook}
+                  onChange={(e) => setNewBook(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addTasteItem("books"))}
                   placeholder="Enter a book title"
                   className="flex-1"
@@ -282,8 +299,8 @@ const ProfileBuilder = () => {
               <Label>Films I revisit (3-5) *</Label>
               <div className="flex gap-2">
                 <Input
-                  value={newItem}
-                  onChange={(e) => setNewItem(e.target.value)}
+                  value={newFilm}
+                  onChange={(e) => setNewFilm(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addTasteItem("films"))}
                   placeholder="Enter a film title"
                   className="flex-1"
@@ -312,8 +329,8 @@ const ProfileBuilder = () => {
               <Label>Music that centers me (3-5) *</Label>
               <div className="flex gap-2">
                 <Input
-                  value={newItem}
-                  onChange={(e) => setNewItem(e.target.value)}
+                  value={newMusic}
+                  onChange={(e) => setNewMusic(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addTasteItem("music"))}
                   placeholder="Enter artist or song"
                   className="flex-1"
@@ -342,8 +359,8 @@ const ProfileBuilder = () => {
               <Label>What inspires me lately (3-5) *</Label>
               <div className="flex gap-2">
                 <Input
-                  value={newItem}
-                  onChange={(e) => setNewItem(e.target.value)}
+                  value={newInspiration}
+                  onChange={(e) => setNewInspiration(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addTasteItem("inspiration"))}
                   placeholder="Enter an inspiration"
                   className="flex-1"
