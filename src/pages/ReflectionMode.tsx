@@ -55,8 +55,8 @@ const ReflectionMode = () => {
   };
 
   const handleSave = async () => {
-    if (wordCount < 50) {
-      toast.error('Please write at least 50 words for your reflection');
+    if (wordCount < 10) {
+      toast.error('Please write at least 10 words for your reflection');
       return;
     }
 
@@ -157,7 +157,7 @@ const ReflectionMode = () => {
                     Share an excerpt on my match cards
                   </Label>
                 </div>
-                <span className={`text-sm ${wordCount < 50 ? 'text-warm-gray' : 'text-sage'}`}>
+                <span className={`text-sm ${wordCount < 10 ? 'text-warm-gray' : 'text-sage'}`}>
                   {wordCount} words
                 </span>
               </div>
@@ -172,7 +172,7 @@ const ReflectionMode = () => {
 
               <Button
                 onClick={handleSave}
-                disabled={loading || wordCount < 50}
+                disabled={loading || wordCount < 10}
                 className="w-full"
                 size="lg"
               >
