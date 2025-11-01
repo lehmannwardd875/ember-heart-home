@@ -29,6 +29,7 @@ const ReflectionMode = () => {
   const [response, setResponse] = useState('');
   const [shared, setShared] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [fetchingPast, setFetchingPast] = useState(false);
   const [pastReflections, setPastReflections] = useState<any[]>([]);
   const [viewMode, setViewMode] = useState<'write' | 'past'>('write');
   const dailyPrompt = getDailyPrompt();
@@ -42,12 +43,24 @@ const ReflectionMode = () => {
   }, [viewMode]);
 
   const fetchPastReflections = async () => {
+    setFetchingPast(true);
+    
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast.error('Please sign in to view your reflections');
+      setFetchingPast(false);
+      return;
+    }
+
     const { data, error } = await supabase
       .from('reflections')
       .select('*')
       .order('created_at', { ascending: false });
 
+    setFetchingPast(false);
+
     if (error) {
+      console.error('Error fetching reflections:', error);
       toast.error('Could not load past reflections');
     } else {
       setPastReflections(data || []);
@@ -194,7 +207,14 @@ const ReflectionMode = () => {
           </Card>
         ) : (
           <div className="space-y-4">
-            {pastReflections.length === 0 ? (
+            {fetchingPast ? (
+              <Card className="text-center py-12">
+                <CardContent>
+                  <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-copper" />
+                  <p className="text-warm-gray text-lg">Loading your reflections...</p>
+                </CardContent>
+              </Card>
+            ) : pastReflections.length === 0 ? (
               <Card className="text-center py-12">
                 <CardContent>
                   <p className="text-warm-gray text-lg">
