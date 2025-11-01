@@ -9,11 +9,18 @@ import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
 import { X, Plus, Eye } from "lucide-react";
 
+const countWords = (text: string) => {
+  return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+};
+
 const profileSchema = z.object({
   profession: z.string().min(2, "Please share your profession"),
   education: z.string().optional(),
   lifeFocus: z.string().min(10).max(150, "Keep it to one meaningful line (max 150 characters)"),
-  reflection: z.string().min(300, "Please write at least 300 words").max(500, "Please keep it under 500 words"),
+  reflection: z.string()
+    .min(1, "Please write your reflection")
+    .refine((val) => countWords(val) >= 100, "Please write at least 100 words")
+    .refine((val) => countWords(val) <= 500, "Please keep it under 500 words"),
   tasteCards: z.object({
     books: z.array(z.string()).min(3, "Add at least 3 books").max(5),
     films: z.array(z.string()).min(3, "Add at least 3 films").max(5),
