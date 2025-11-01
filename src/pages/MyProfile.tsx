@@ -72,7 +72,10 @@ const MyProfile = () => {
       return;
     }
 
-    setProfile(data);
+    setProfile({
+      ...data,
+      taste_cards: data.taste_cards as { books: string[]; films: string[]; music: string[]; inspiration: string[] }
+    });
     setLoading(false);
   };
 
