@@ -38,7 +38,7 @@ const Hero = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/welcome">
+              <Link to="/auth">
                 <Button 
                   size="lg" 
                   variant="secondary"
