@@ -41,14 +41,14 @@ const Auth = () => {
     // Check if user is already logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        navigate('/welcome');
+        navigate('/daily-matches');
       }
     });
 
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session && event === 'SIGNED_IN') {
-        navigate('/welcome');
+        navigate('/daily-matches');
       }
     });
 
@@ -166,7 +166,7 @@ const Auth = () => {
           title: "Welcome back",
           description: "You've successfully signed in.",
         });
-        navigate('/welcome');
+        navigate('/daily-matches');
       }
     } catch (error) {
       toast({
