@@ -5,11 +5,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const onboardingSchema = z.object({
   fullName: z.string().min(2, "Please enter your full name"),
   age: z.number().min(45, "Hearth is designed for adults 45+").max(65, "Hearth is designed for adults 45-65"),
   email: z.string().email("Please enter a valid email"),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .regex(/[A-Z]/, "Password must include at least one uppercase letter")
+    .regex(/[a-z]/, "Password must include at least one lowercase letter")
+    .regex(/[0-9]/, "Password must include at least one number"),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
 });
 
 const Welcome = () => {
@@ -17,26 +28,51 @@ const Welcome = () => {
   const [fullName, setFullName] = useState("");
   const [age, setAge] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
 
     try {
       const validated = onboardingSchema.parse({
         fullName,
         age: parseInt(age),
         email,
+        password,
+        confirmPassword,
       });
 
-      // Store in localStorage temporarily (until backend)
-      localStorage.setItem("hearth_onboarding", JSON.stringify(validated));
-      
-      toast({
-        title: "Welcome to Hearth",
-        description: "Let's continue your journey",
+      const { data, error } = await supabase.auth.signUp({
+        email: validated.email,
+        password: validated.password,
+        options: {
+          data: {
+            full_name: validated.fullName,
+            age: validated.age,
+          },
+          emailRedirectTo: `${window.location.origin}/verify`,
+        },
       });
 
-      navigate("/verify");
+      if (error) {
+        toast({
+          title: "Signup failed",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (data.user) {
+        toast({
+          title: "Welcome to Hearth",
+          description: "Please check your email to verify your account",
+        });
+        navigate("/verify");
+      }
     } catch (error) {
       if (error instanceof z.ZodError) {
         toast({
@@ -45,6 +81,8 @@ const Welcome = () => {
           variant: "destructive",
         });
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -120,14 +158,55 @@ const Welcome = () => {
               />
             </div>
 
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-base">
+                Password
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Create a secure password"
+                className="h-12 text-base"
+                required
+              />
+              <p className="text-sm text-muted-foreground">
+                Must be 8+ characters with at least one uppercase letter, one lowercase letter, and one number
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword" className="text-base">
+                Confirm Password
+              </Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Re-enter your password"
+                className="h-12 text-base"
+                required
+              />
+            </div>
+
             <div className="pt-4">
               <Button
                 type="submit"
                 size="lg"
                 className="w-full h-12 text-base"
+                disabled={isLoading}
               >
-                Begin Your Journey
+                {isLoading ? "Creating Your Account..." : "Begin Your Journey"}
               </Button>
+            </div>
+
+            <div className="text-center text-sm text-muted-foreground">
+              Already have an account?{" "}
+              <Link to="/auth" className="text-primary hover:underline font-medium">
+                Sign in
+              </Link>
             </div>
           </form>
         </div>
