@@ -10,6 +10,8 @@ import Auth from "./pages/Auth";
 import Welcome from "./pages/Welcome";
 import Verification from "./pages/Verification";
 import ProfileBuilder from "./pages/ProfileBuilder";
+import ProfilePublished from "./pages/ProfilePublished";
+import MyProfile from "./pages/MyProfile";
 import Settings from "./pages/Settings";
 import ReflectionMode from "./pages/ReflectionMode";
 import DailyMatches from "./pages/DailyMatches";
@@ -31,6 +33,8 @@ const App = () => (
           <Route path="/welcome" element={<ProtectedRoute><Welcome /></ProtectedRoute>} />
           <Route path="/verify" element={<ProtectedRoute><Verification /></ProtectedRoute>} />
           <Route path="/profile/create" element={<ProtectedRoute><ProfileBuilder /></ProtectedRoute>} />
+          <Route path="/profile/published" element={<ProtectedRoute><ProfilePublished /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><MyProfile /></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
           <Route path="/reflection" element={<ProtectedRoute><ReflectionMode /></ProtectedRoute>} />
           <Route path="/matches" element={<ProtectedRoute><DailyMatches /></ProtectedRoute>} />

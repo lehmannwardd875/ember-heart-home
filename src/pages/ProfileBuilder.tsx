@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
 import { X, Plus, Eye } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const countWords = (text: string) => {
   return text.trim().split(/\s+/).filter(word => word.length > 0).length;
@@ -35,6 +36,7 @@ const ProfileBuilder = () => {
   const navigate = useNavigate();
   const [section, setSection] = useState<Section>(1);
   const [showPreview, setShowPreview] = useState(false);
+  const [publishing, setPublishing] = useState(false);
 
   // Form fields
   const [profession, setProfession] = useState("");
@@ -136,8 +138,11 @@ const ProfileBuilder = () => {
     }
   };
 
-  const handlePublish = () => {
+  const handlePublish = async () => {
     try {
+      setPublishing(true);
+      
+      // Validate all fields first
       const validated = profileSchema.parse({
         profession,
         education: education || undefined,
@@ -146,12 +151,52 @@ const ProfileBuilder = () => {
         tasteCards: { books, films, music, inspiration },
       });
 
+      // Get current user
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      if (userError || !user) {
+        console.error('Auth error:', userError);
+        toast({
+          title: "Authentication required",
+          description: "Please log in to publish your profile",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Save to Supabase
+      const { error: dbError } = await supabase
+        .from('profiles')
+        .update({
+          profession: validated.profession,
+          education: validated.education || null,
+          life_focus: validated.lifeFocus,
+          reflection: validated.reflection,
+          taste_cards: validated.tasteCards,
+        })
+        .eq('user_id', user.id);
+
+      if (dbError) {
+        console.error('Database error:', dbError.message, dbError);
+        toast({
+          title: "Could not save profile",
+          description: `Error: ${dbError.message}`,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Also save to localStorage as backup
       localStorage.setItem("hearth_profile", JSON.stringify(validated));
+      
       toast({
         title: "Profile published!",
         description: "Your story is beautifully told",
       });
-      navigate("/matches");
+      
+      // Navigate to success page instead of matches
+      navigate("/profile/published");
+      
     } catch (error) {
       if (error instanceof z.ZodError) {
         toast({
@@ -159,7 +204,16 @@ const ProfileBuilder = () => {
           description: error.issues[0].message,
           variant: "destructive",
         });
+      } else {
+        console.error('Unexpected error:', error);
+        toast({
+          title: "Something went wrong",
+          description: "Please try again",
+          variant: "destructive",
+        });
       }
+    } finally {
+      setPublishing(false);
     }
   };
 

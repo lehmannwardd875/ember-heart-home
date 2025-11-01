@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { Heart, X, Loader2, Sparkles } from 'lucide-react';
+import { Heart, X, Loader2, Sparkles, User, Settings } from 'lucide-react';
 
 interface Match {
   id: string;
@@ -151,6 +151,24 @@ const DailyMatches = () => {
   return (
     <div className="min-h-screen bg-ivory py-12 px-4">
       <div className="max-w-4xl mx-auto">
+        {/* Header with navigation */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex gap-2">
+            <Link to="/profile">
+              <Button variant="ghost" size="sm">
+                <User className="w-4 h-4 mr-2" />
+                My Profile
+              </Button>
+            </Link>
+            <Link to="/settings">
+              <Button variant="ghost" size="sm">
+                <Settings className="w-4 h-4 mr-2" />
+                Settings
+              </Button>
+            </Link>
+          </div>
+        </div>
+
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Sparkles className="w-6 h-6 text-copper" />

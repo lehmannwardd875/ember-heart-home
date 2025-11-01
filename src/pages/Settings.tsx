@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,7 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
-import { CheckCircle2, User, Lock, Bell, Shield } from "lucide-react";
+import { CheckCircle2, User, Lock, Bell, Shield, Edit } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Settings = () => {
   const [invisibleMode, setInvisibleMode] = useState(false);
@@ -15,8 +16,38 @@ const Settings = () => {
   const [minAge, setMinAge] = useState("45");
   const [maxAge, setMaxAge] = useState("65");
   const [proximityRadius, setProximityRadius] = useState("50");
+  const [profileData, setProfileData] = useState<{
+    full_name: string;
+    profession: string;
+    updated_at: string;
+    verified: boolean;
+    verified_at: string | null;
+  } | null>(null);
 
   const isVerified = localStorage.getItem("hearth_verified") === "true";
+
+  useEffect(() => {
+    fetchProfileSummary();
+  }, []);
+
+  const fetchProfileSummary = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('full_name, profession, updated_at, verified, verified_at')
+      .eq('user_id', user.id)
+      .single();
+
+    if (error) {
+      console.error('Error fetching profile:', error);
+      return;
+    }
+
+    setProfileData(data);
+  };
 
   const handleSave = () => {
     const settings = {
@@ -67,6 +98,26 @@ const Settings = () => {
               <h2 className="text-xl font-semibold">Profile Management</h2>
             </div>
 
+            {profileData && (
+              <div className="bg-accent/10 p-4 rounded-lg space-y-2 mb-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-semibold text-lg">{profileData.full_name}</p>
+                    <p className="text-sm text-muted-foreground">{profileData.profession}</p>
+                  </div>
+                  {profileData.verified && (
+                    <div className="flex items-center gap-2 text-accent">
+                      <CheckCircle2 className="w-5 h-5" />
+                      <span className="text-sm font-medium">Verified</span>
+                    </div>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Last updated: {new Date(profileData.updated_at).toLocaleDateString()}
+                </p>
+              </div>
+            )}
+
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-medium">Verification Status</p>
@@ -74,7 +125,7 @@ const Settings = () => {
                   {isVerified ? "Your profile is verified" : "Verification pending"}
                 </p>
               </div>
-              {isVerified && (
+              {isVerified && !profileData?.verified && (
                 <div className="flex items-center gap-2 text-accent">
                   <CheckCircle2 className="w-5 h-5" />
                   <span className="text-sm font-medium">Verified</span>
@@ -85,8 +136,15 @@ const Settings = () => {
             <Separator />
 
             <div className="space-y-2">
+              <Link to="/profile">
+                <Button variant="default" className="w-full">
+                  <User className="w-4 h-4 mr-2" />
+                  View My Profile
+                </Button>
+              </Link>
               <Link to="/profile/create">
                 <Button variant="outline" className="w-full">
+                  <Edit className="w-4 h-4 mr-2" />
                   Edit Profile
                 </Button>
               </Link>
