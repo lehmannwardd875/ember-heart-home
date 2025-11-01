@@ -42,7 +42,7 @@ const Hero = () => {
                 <Button 
                   size="lg" 
                   variant="secondary"
-                  className="text-lg px-8 py-6 shadow-warm hover:scale-105 transition-all"
+                  className="w-full sm:w-auto text-lg px-8 py-6 shadow-warm hover:scale-105 transition-all"
                 >
                   Start Your Journey
                 </Button>
@@ -50,7 +50,7 @@ const Hero = () => {
               <Button 
                 size="lg" 
                 variant="outline"
-                className="text-lg px-8 py-6 h-auto border-2 border-primary-foreground bg-transparent text-primary-foreground hover:bg-primary-foreground hover:text-primary transition-all"
+                className="w-full sm:w-auto text-lg px-8 py-6 border-2 border-primary-foreground bg-transparent text-primary-foreground hover:bg-primary-foreground hover:text-primary transition-all"
               >
                 How It Works
               </Button>
