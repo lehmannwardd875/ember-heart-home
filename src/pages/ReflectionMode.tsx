@@ -162,12 +162,17 @@ const ReflectionMode = () => {
                 </span>
               </div>
 
-              <div className="text-sm text-warm-gray bg-copper/5 p-4 rounded-lg">
-                <p className="font-medium mb-2">About sharing:</p>
-                <p>
-                  When you choose to share, a meaningful excerpt from your reflection may appear 
-                  on your match cards, helping others understand the depth of your heart.
-                </p>
+              <div className="text-sm text-warm-gray bg-copper/5 p-4 rounded-lg space-y-2">
+                <div>
+                  <p className="font-medium">Minimum 10 words required to save</p>
+                </div>
+                <div>
+                  <p className="font-medium">About sharing:</p>
+                  <p>
+                    When you choose to share, a meaningful excerpt from your reflection may appear 
+                    on your match cards, helping others understand the depth of your heart.
+                  </p>
+                </div>
               </div>
 
               <Button
