@@ -81,7 +81,7 @@ const Auth = () => {
         email: result.data.email,
         password: result.data.password,
         options: {
-          emailRedirectTo: `${window.location.origin}/`,
+          emailRedirectTo: `${window.location.origin}/auth`,
           data: {
             full_name: result.data.fullName,
             age: result.data.age,
