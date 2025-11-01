@@ -30,6 +30,7 @@ const DailyMatches = () => {
   const navigate = useNavigate();
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
@@ -90,11 +91,17 @@ const DailyMatches = () => {
     setLoading(false);
   };
 
+  const hasMutualInterest = (match: Match): boolean => {
+    return match.user1_interest === 'interested' && match.user2_interest === 'interested';
+  };
+
   const handleInterest = async (matchId: string, interested: boolean) => {
     if (!user) return;
 
     const match = matches.find((m) => m.id === matchId);
     if (!match) return;
+
+    setActionLoading(matchId);
 
     const isUser1 = match.user1_id === user.id;
     const updateField = isUser1 ? 'user1_interest' : 'user2_interest';
@@ -104,6 +111,8 @@ const DailyMatches = () => {
       .from('matches')
       .update({ [updateField]: interestValue })
       .eq('id', matchId);
+
+    setActionLoading(null);
 
     if (error) {
       toast.error('Could not update interest');
@@ -119,12 +128,16 @@ const DailyMatches = () => {
           onClick: () => navigate(`/chat/${matchId}`),
         },
       });
+      // Reload matches to show "Start Chat" button
+      await loadUserAndMatches();
     } else if (interested) {
       toast.success('Interest recorded. We\'ll let you know if they\'re interested too!');
+      // Remove from view
+      setMatches(matches.filter((m) => m.id !== matchId));
+    } else {
+      // Remove from view
+      setMatches(matches.filter((m) => m.id !== matchId));
     }
-
-    // Remove from view
-    setMatches(matches.filter((m) => m.id !== matchId));
   };
 
   if (loading) {
@@ -180,7 +193,10 @@ const DailyMatches = () => {
               const currentUserInterest = 
                 match.user1_id === user?.id ? match.user1_interest : match.user2_interest;
               
-              if (currentUserInterest !== 'pending') return null;
+              // Show pending matches and mutual interest matches
+              const showMatch = currentUserInterest === 'pending' || hasMutualInterest(match);
+              
+              if (!showMatch) return null;
 
               return (
                 <Card key={match.id} className="overflow-hidden border-copper/20 shadow-lg">
@@ -225,25 +241,47 @@ const DailyMatches = () => {
                           </div>
                         )}
 
-                        <div className="flex gap-4 pt-4">
-                          <Button
-                            variant="outline"
-                            size="lg"
-                            onClick={() => handleInterest(match.id, false)}
-                            className="flex-1"
-                          >
-                            <X className="w-5 h-5 mr-2" />
-                            Not now
-                          </Button>
-                          <Button
-                            size="lg"
-                            onClick={() => handleInterest(match.id, true)}
-                            className="flex-1"
-                          >
-                            <Heart className="w-5 h-5 mr-2" />
-                            I'm interested
-                          </Button>
-                        </div>
+                        {hasMutualInterest(match) ? (
+                          <div className="flex gap-4 pt-4">
+                            <div className="flex-1 bg-sage/10 text-sage p-4 rounded-lg border border-sage/20 text-center">
+                              <p className="font-medium mb-2">✨ It's a match!</p>
+                              <p className="text-sm">You both are interested in connecting</p>
+                            </div>
+                            <Button
+                              size="lg"
+                              onClick={() => navigate(`/chat/${match.id}`)}
+                              className="flex-1"
+                            >
+                              Start Chat
+                            </Button>
+                          </div>
+                        ) : (
+                          <div className="flex gap-4 pt-4">
+                            <Button
+                              variant="outline"
+                              size="lg"
+                              onClick={() => handleInterest(match.id, false)}
+                              disabled={actionLoading === match.id}
+                              className="flex-1"
+                            >
+                              <X className="w-5 h-5 mr-2" />
+                              Not now
+                            </Button>
+                            <Button
+                              size="lg"
+                              onClick={() => handleInterest(match.id, true)}
+                              disabled={actionLoading === match.id}
+                              className="flex-1"
+                            >
+                              {actionLoading === match.id ? (
+                                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                              ) : (
+                                <Heart className="w-5 h-5 mr-2" />
+                              )}
+                              I'm interested
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </CardContent>

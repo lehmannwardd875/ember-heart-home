@@ -14,6 +14,7 @@ import Settings from "./pages/Settings";
 import ReflectionMode from "./pages/ReflectionMode";
 import DailyMatches from "./pages/DailyMatches";
 import Admin from "./pages/Admin";
+import PrivateChat from "./pages/PrivateChat";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/reflection" element={<ProtectedRoute><ReflectionMode /></ProtectedRoute>} />
           <Route path="/matches" element={<ProtectedRoute><DailyMatches /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute><AdminRoute><Admin /></AdminRoute></ProtectedRoute>} />
+          <Route path="/chat/:matchId" element={<ProtectedRoute><PrivateChat /></ProtectedRoute>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
