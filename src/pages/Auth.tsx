@@ -10,7 +10,11 @@ import { z } from 'zod';
 
 const signUpSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: z.string()
+    .min(8, 'Password must be at least 8 characters')
+    .regex(/[a-z]/, 'Password must include a lowercase letter')
+    .regex(/[A-Z]/, 'Password must include an uppercase letter')
+    .regex(/[0-9]/, 'Password must include a number'),
   fullName: z.string().min(2, 'Please enter your full name').max(100),
   age: z.number().min(45, 'You must be at least 45 years old').max(65, 'You must be 65 or younger'),
 });
@@ -298,11 +302,14 @@ const Auth = () => {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="At least 6 characters"
+                    placeholder="Create a secure password"
                     required
                     disabled={loading}
                     className="mt-1.5 text-base"
                   />
+                  <p className="text-sm text-muted-foreground mt-1.5">
+                    Must be 8+ characters with at least one uppercase letter, one lowercase letter, and one number
+                  </p>
                 </div>
                 <Button
                   type="submit"
