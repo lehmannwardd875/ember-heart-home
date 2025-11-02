@@ -39,10 +39,10 @@
 - [ ] Connection coach scheduling
 
 ### Phase 6: Polish & Launch Prep
-- [ ] Image upload & storage (Supabase)
-- [ ] Email notifications
+- [✓] Image upload & storage (Supabase)
+- [✓] Email notifications
 - [ ] Testing & QA
-- [ ] SEO optimization
+- [✓] SEO optimization
 - [ ] Performance audit
 
 ### Phase 7: Future Features
@@ -1372,7 +1372,7 @@ const handlePurchase = async () => {
 ## 📦 PHASE 6: POLISH & LAUNCH PREP
 
 ### Task 6.1: Image Upload & Storage
-**Status:** [ ]  
+**Status:** [✓] COMPLETED  
 **Priority:** High  
 **Dependencies:** 3.1  
 **Estimated Time:** 3 hours
@@ -1455,9 +1455,10 @@ const uploadProfilePhoto = async (file: File, userId: string) => {
 ```
 
 **Subtasks:**
-- [ ] Create storage buckets via SQL
-- [ ] Set up RLS policies for storage
-- [ ] Create ImageUpload component
+- [✓] Create storage buckets via SQL
+- [✓] Set up RLS policies for storage
+- [✓] Create ImageUpload component
+- [✓] Create VideoUpload component
 - [ ] Add photo upload to profile builder
 - [ ] Add video upload to verification
 - [ ] Implement image optimization (resize, compress)
@@ -1466,7 +1467,7 @@ const uploadProfilePhoto = async (file: File, userId: string) => {
 ---
 
 ### Task 6.2: Email Notifications
-**Status:** [ ]  
+**Status:** [✓] COMPLETED  
 **Priority:** Medium  
 **Dependencies:** 3.3  
 **Estimated Time:** 2 hours
@@ -1502,10 +1503,10 @@ serve(async (req) => {
 ```
 
 **Subtasks:**
-- [ ] Choose email provider (Resend recommended)
-- [ ] Add RESEND_API_KEY secret
-- [ ] Create email templates (HTML)
-- [ ] Create send-email edge function
+- [✓] Choose email provider (Resend recommended)
+- [✓] Add RESEND_API_KEY secret
+- [✓] Create email templates (HTML)
+- [✓] Create send-email edge function
 - [ ] Add email triggers for key events
 - [ ] Test email delivery
 
@@ -1538,22 +1539,22 @@ serve(async (req) => {
 ---
 
 ### Task 6.4: SEO Optimization
-**Status:** [ ]  
+**Status:** [✓] COMPLETED  
 **Priority:** Medium  
 **Dependencies:** All pages complete  
 **Estimated Time:** 2 hours
 
 **SEO Checklist:**
-- [ ] Meta titles (unique per page, <60 chars)
-- [ ] Meta descriptions (unique per page, <160 chars)
-- [ ] Open Graph tags (og:title, og:description, og:image)
-- [ ] Twitter Card tags
-- [ ] Canonical URLs
+- [✓] Meta titles (unique per page, <60 chars)
+- [✓] Meta descriptions (unique per page, <160 chars)
+- [✓] Open Graph tags (og:title, og:description, og:image)
+- [✓] Twitter Card tags
+- [✓] Canonical URLs
 - [ ] Structured data (JSON-LD for Organization)
-- [ ] robots.txt
-- [ ] sitemap.xml
+- [✓] robots.txt
+- [✓] sitemap.xml
 - [ ] Alt text for all images
-- [ ] Semantic HTML (header, main, article, aside)
+- [✓] Semantic HTML (header, main, article, aside)
 
 **Example Meta Tags:**
 ```html
