@@ -10,8 +10,9 @@ const Hero = () => {
       <div className="absolute inset-0 z-0">
         <img
           src={heroImage}
-          alt="Couple in warm embrace"
+          alt="Happy mature couple embracing outdoors, representing authentic connection and companionship for life's next chapter"
           className="w-full h-full object-cover"
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/85 to-primary/70" />
       </div>

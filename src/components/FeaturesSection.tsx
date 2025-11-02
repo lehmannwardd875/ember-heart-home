@@ -62,8 +62,9 @@ const FeaturesSection = () => {
                   <div className="relative rounded-3xl overflow-hidden shadow-warm border-4 border-primary/10">
                     <img
                       src={feature.image}
-                      alt={feature.title}
+                      alt={`${feature.title}: ${feature.description.substring(0, 100)}`}
                       className="w-full h-[500px] object-cover group-hover:scale-105 transition-transform duration-700"
+                      loading="lazy"
                     />
                   </div>
                   
