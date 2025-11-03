@@ -3,12 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Heart, Menu } from "lucide-react";
 import { useState } from "react";
 import { useSmartRedirect } from "@/hooks/useSmartRedirect";
-import { useLoginRedirect } from "@/hooks/useLoginRedirect";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { handleRedirect, isChecking } = useSmartRedirect();
-  const { handleLoginRedirect, isChecking: isCheckingLogin } = useLoginRedirect();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
@@ -40,8 +38,8 @@ const Navbar = () => {
             <Button 
               variant="ghost" 
               className="text-foreground"
-              onClick={handleLoginRedirect}
-              disabled={isCheckingLogin}
+              onClick={handleRedirect}
+              disabled={isChecking}
             >
               Log In
             </Button>
@@ -80,8 +78,8 @@ const Navbar = () => {
               <Button 
                 variant="ghost" 
                 className="w-full"
-                onClick={handleLoginRedirect}
-                disabled={isCheckingLogin}
+                onClick={handleRedirect}
+                disabled={isChecking}
               >
                 Log In
               </Button>
