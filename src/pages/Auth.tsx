@@ -38,17 +38,43 @@ const Auth = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const checkAuthAndRedirect = async (userId: string) => {
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('selfie_url, video_intro_url')
+          .eq('user_id', userId)
+          .single();
+
+        if (error) {
+          console.error('Error checking verification:', error);
+          navigate('/verify');
+          return;
+        }
+
+        // Check if user has completed verification
+        if (data?.selfie_url && data?.video_intro_url) {
+          navigate('/profile/create');
+        } else {
+          navigate('/verify');
+        }
+      } catch (err) {
+        console.error('Redirect check failed:', err);
+        navigate('/verify');
+      }
+    };
+
     // Check if user is already logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        navigate('/welcome');
+      if (session?.user) {
+        checkAuthAndRedirect(session.user.id);
       }
     });
 
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session && event === 'SIGNED_IN') {
-        navigate('/welcome');
+      if (session?.user && event === 'SIGNED_IN') {
+        checkAuthAndRedirect(session.user.id);
       }
     });
 
@@ -108,8 +134,8 @@ const Auth = () => {
           title: "Welcome to Hearth",
           description: "Please check your email to confirm your account.",
         });
-        // Navigate to profile creation after successful signup
-        navigate('/profile/create');
+        // Navigate to verification after successful signup
+        navigate('/verify');
       }
     } catch (error) {
       toast({
@@ -162,11 +188,26 @@ const Auth = () => {
           });
         }
       } else {
-        toast({
-          title: "Welcome back",
-          description: "You've successfully signed in.",
-        });
-        navigate('/welcome');
+        // Check verification status before redirecting
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('selfie_url, video_intro_url')
+            .eq('user_id', user.id)
+            .single();
+
+          toast({
+            title: "Welcome back",
+            description: "You've successfully signed in.",
+          });
+
+          if (!error && data?.selfie_url && data?.video_intro_url) {
+            navigate('/profile/create');
+          } else {
+            navigate('/verify');
+          }
+        }
       }
     } catch (error) {
       toast({

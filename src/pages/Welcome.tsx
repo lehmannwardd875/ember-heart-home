@@ -33,17 +33,43 @@ const Welcome = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    const checkAuthAndRedirect = async (userId: string) => {
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('selfie_url, video_intro_url')
+          .eq('user_id', userId)
+          .single();
+
+        if (error) {
+          console.error('Error checking verification:', error);
+          navigate('/verify');
+          return;
+        }
+
+        // Check if user has completed verification
+        if (data?.selfie_url && data?.video_intro_url) {
+          navigate('/profile/create');
+        } else {
+          navigate('/verify');
+        }
+      } catch (err) {
+        console.error('Redirect check failed:', err);
+        navigate('/verify');
+      }
+    };
+
     // Check if user is already logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        navigate('/profile/create');
+      if (session?.user) {
+        checkAuthAndRedirect(session.user.id);
       }
     });
 
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session && event === 'SIGNED_IN') {
-        navigate('/profile/create');
+      if (session?.user && event === 'SIGNED_IN') {
+        checkAuthAndRedirect(session.user.id);
       }
     });
 

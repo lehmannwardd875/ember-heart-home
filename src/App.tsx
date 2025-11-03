@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AdminRoute } from "./components/AdminRoute";
+import { VerificationGuard } from "./components/VerificationGuard";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Welcome from "./pages/Welcome";
@@ -32,7 +33,7 @@ const App = () => (
           <Route path="/auth" element={<Auth />} />
           <Route path="/welcome" element={<ProtectedRoute><Welcome /></ProtectedRoute>} />
           <Route path="/verify" element={<ProtectedRoute><Verification /></ProtectedRoute>} />
-          <Route path="/profile/create" element={<ProtectedRoute><ProfileBuilder /></ProtectedRoute>} />
+          <Route path="/profile/create" element={<ProtectedRoute><VerificationGuard><ProfileBuilder /></VerificationGuard></ProtectedRoute>} />
           <Route path="/profile/published" element={<ProtectedRoute><ProfilePublished /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><MyProfile /></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
