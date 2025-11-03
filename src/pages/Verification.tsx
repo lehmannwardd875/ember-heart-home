@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
-import { CheckCircle2, Upload, Video, Linkedin } from "lucide-react";
+import { CheckCircle2, Upload, Video, Linkedin, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 type VerificationStep = "selfie" | "video" | "linkedin" | "success";
 
@@ -14,8 +15,11 @@ const Verification = () => {
   const [step, setStep] = useState<VerificationStep>("selfie");
   const [selfie, setSelfie] = useState<File | null>(null);
   const [video, setVideo] = useState<File | null>(null);
+  const [selfieUrl, setSelfieUrl] = useState<string>("");
+  const [videoUrl, setVideoUrl] = useState<string>("");
   const [linkedinUrl, setLinkedinUrl] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const progressValue = {
     selfie: 25,
@@ -38,36 +42,152 @@ const Verification = () => {
     "No rehearsal needed — just be you",
   ];
 
-  const handleSelfieUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelfie(file);
-      toast({
-        title: "Photo uploaded",
-        description: "Looking great!",
-      });
+  const uploadImageToStorage = async (file: File) => {
+    try {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) {
+        throw new Error('Must be logged in to upload');
+      }
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/selfie-${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('profile-photos')
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage
+        .from('profile-photos')
+        .getPublicUrl(fileName);
+
+      return urlData.publicUrl;
+    } catch (error: any) {
+      console.error('Image upload error:', error);
+      throw error;
     }
   };
 
-  const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setVideo(file);
-      toast({
-        title: "Video uploaded",
-        description: "Perfect!",
-      });
+  const uploadVideoToStorage = async (file: File) => {
+    try {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) {
+        throw new Error('Must be logged in to upload');
+      }
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/video-intro-${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('video-intros')
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage
+        .from('video-intros')
+        .getPublicUrl(fileName);
+
+      return urlData.publicUrl;
+    } catch (error: any) {
+      console.error('Video upload error:', error);
+      throw error;
     }
   };
 
-  const handleVerification = () => {
+  const handleSelfieUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setUploading(true);
+      try {
+        const url = await uploadImageToStorage(file);
+        setSelfie(file);
+        setSelfieUrl(url);
+        toast({
+          title: "Photo uploaded",
+          description: "Looking great!",
+        });
+      } catch (error: any) {
+        toast({
+          title: "Upload failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      } finally {
+        setUploading(false);
+      }
+    }
+  };
+
+  const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setUploading(true);
+      try {
+        const url = await uploadVideoToStorage(file);
+        setVideo(file);
+        setVideoUrl(url);
+        toast({
+          title: "Video uploaded",
+          description: "Perfect!",
+        });
+      } catch (error: any) {
+        toast({
+          title: "Upload failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      } finally {
+        setUploading(false);
+      }
+    }
+  };
+
+  const handleVerification = async () => {
     setIsVerifying(true);
-    // Simulate verification delay
-    setTimeout(() => {
+    try {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) {
+        throw new Error('Must be logged in');
+      }
+
+      // Update profile with verification data
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({
+          selfie_url: selfieUrl,
+          video_intro_url: videoUrl,
+          linkedin_url: linkedinUrl || null,
+          linkedin_verified: !!linkedinUrl,
+        })
+        .eq('user_id', user.id);
+
+      if (updateError) throw updateError;
+
       localStorage.setItem("hearth_verified", "true");
-      setIsVerifying(false);
       setStep("success");
-    }, 2000);
+      
+      toast({
+        title: "Verification complete!",
+        description: "Your profile is now verified",
+      });
+    } catch (error: any) {
+      console.error('Verification error:', error);
+      toast({
+        title: "Verification failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
   const renderStep = () => {
@@ -100,7 +220,12 @@ const Verification = () => {
             <div className="space-y-4">
               <Label htmlFor="selfie" className="cursor-pointer">
                 <div className="border-2 border-dashed border-border rounded-lg p-8 hover:border-primary transition-colors text-center">
-                  {selfie ? (
+                  {uploading ? (
+                    <div className="space-y-2">
+                      <Loader2 className="w-8 h-8 text-primary mx-auto animate-spin" />
+                      <p className="text-sm text-muted-foreground">Uploading...</p>
+                    </div>
+                  ) : selfie ? (
                     <div className="space-y-2">
                       <CheckCircle2 className="w-8 h-8 text-accent mx-auto" />
                       <p className="text-sm font-medium">{selfie.name}</p>
@@ -120,12 +245,13 @@ const Verification = () => {
                   accept="image/*"
                   onChange={handleSelfieUpload}
                   className="hidden"
+                  disabled={uploading}
                 />
               </Label>
 
               <Button
                 onClick={() => setStep("video")}
-                disabled={!selfie}
+                disabled={!selfie || uploading}
                 size="lg"
                 className="w-full"
               >
@@ -163,7 +289,12 @@ const Verification = () => {
             <div className="space-y-4">
               <Label htmlFor="video" className="cursor-pointer">
                 <div className="border-2 border-dashed border-border rounded-lg p-8 hover:border-primary transition-colors text-center">
-                  {video ? (
+                  {uploading ? (
+                    <div className="space-y-2">
+                      <Loader2 className="w-8 h-8 text-primary mx-auto animate-spin" />
+                      <p className="text-sm text-muted-foreground">Uploading...</p>
+                    </div>
+                  ) : video ? (
                     <div className="space-y-2">
                       <CheckCircle2 className="w-8 h-8 text-accent mx-auto" />
                       <p className="text-sm font-medium">{video.name}</p>
@@ -183,6 +314,7 @@ const Verification = () => {
                   accept="video/*"
                   onChange={handleVideoUpload}
                   className="hidden"
+                  disabled={uploading}
                 />
               </Label>
 
@@ -192,12 +324,13 @@ const Verification = () => {
                   onClick={() => setStep("selfie")}
                   size="lg"
                   className="flex-1"
+                  disabled={uploading}
                 >
                   Back
                 </Button>
                 <Button
                   onClick={() => setStep("linkedin")}
-                  disabled={!video}
+                  disabled={!video || uploading}
                   size="lg"
                   className="flex-1"
                 >
@@ -243,6 +376,7 @@ const Verification = () => {
                   onClick={() => setStep("video")}
                   size="lg"
                   className="flex-1"
+                  disabled={isVerifying}
                 >
                   Back
                 </Button>
@@ -252,7 +386,14 @@ const Verification = () => {
                   size="lg"
                   className="flex-1"
                 >
-                  {isVerifying ? "Verifying..." : "Complete Verification"}
+                  {isVerifying ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    "Complete Verification"
+                  )}
                 </Button>
               </div>
             </div>

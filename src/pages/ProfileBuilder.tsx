@@ -10,18 +10,13 @@ import { toast } from "@/hooks/use-toast";
 import { X, Plus, Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
-const countWords = (text: string) => {
-  return text.trim().split(/\s+/).filter(word => word.length > 0).length;
-};
-
 const profileSchema = z.object({
   profession: z.string().min(2, "Please share your profession"),
   education: z.string().optional(),
   lifeFocus: z.string().min(10).max(150, "Keep it to one meaningful line (max 150 characters)"),
   reflection: z.string()
-    .min(1, "Please write your reflection")
-    .refine((val) => countWords(val) >= 100, "Please write at least 100 words")
-    .refine((val) => countWords(val) <= 500, "Please keep it under 500 words"),
+    .min(80, "Please write at least 80 characters")
+    .max(800, "Please keep it under 800 characters"),
   tasteCards: z.object({
     books: z.array(z.string()).min(3, "Add at least 3 books").max(5),
     films: z.array(z.string()).min(3, "Add at least 3 films").max(5),
@@ -307,7 +302,7 @@ const ProfileBuilder = () => {
                 className="resize-none leading-relaxed"
               />
               <p className="text-sm text-muted-foreground text-right">
-                {reflection.split(/\s+/).filter(Boolean).length} words (300-500 recommended)
+                {reflection.length} / 800 characters (minimum 80)
               </p>
             </div>
           </div>
