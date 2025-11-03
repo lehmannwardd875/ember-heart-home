@@ -166,6 +166,8 @@ const Verification = () => {
           video_intro_url: videoUrl,
           linkedin_url: linkedinUrl || null,
           linkedin_verified: !!linkedinUrl,
+          verified: true,
+          verified_at: new Date().toISOString(),
         })
         .eq('user_id', user.id);
 
