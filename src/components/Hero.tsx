@@ -1,9 +1,11 @@
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-couple.jpg";
 import { Heart } from "lucide-react";
+import { useSmartRedirect } from "@/hooks/useSmartRedirect";
 
 const Hero = () => {
+  const { handleRedirect, isChecking } = useSmartRedirect();
+
   return (
     <section className="relative min-h-screen flex items-center">
       {/* Background Image with Overlay */}
@@ -39,15 +41,15 @@ const Hero = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/auth">
-                <Button 
-                  size="lg" 
-                  variant="secondary"
-                  className="w-full sm:w-auto text-lg px-8 py-6 shadow-warm hover:scale-105 transition-all"
-                >
-                  Start Your Journey
-                </Button>
-              </Link>
+              <Button 
+                size="lg" 
+                variant="secondary"
+                className="w-full sm:w-auto text-lg px-8 py-6 shadow-warm hover:scale-105 transition-all"
+                onClick={handleRedirect}
+                disabled={isChecking}
+              >
+                Start Your Journey
+              </Button>
               <Button 
                 size="lg" 
                 variant="outline"

@@ -1,8 +1,10 @@
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
+import { useSmartRedirect } from "@/hooks/useSmartRedirect";
 
 const CTASection = () => {
+  const { handleRedirect, isChecking } = useSmartRedirect();
+
   return (
     <section className="py-24 bg-gradient-hero relative overflow-hidden">
       {/* Decorative Elements */}
@@ -33,15 +35,15 @@ const CTASection = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
-            <Link to="/auth">
-              <Button
-                size="lg"
-                variant="secondary"
-                className="text-lg px-10 py-7 shadow-warm hover:scale-105 transition-all font-semibold"
-              >
-                Begin Your Story
-              </Button>
-            </Link>
+            <Button
+              size="lg"
+              variant="secondary"
+              className="text-lg px-10 py-7 shadow-warm hover:scale-105 transition-all font-semibold"
+              onClick={handleRedirect}
+              disabled={isChecking}
+            >
+              Begin Your Story
+            </Button>
             <Button
               size="lg"
               variant="outline"

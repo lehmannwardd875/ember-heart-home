@@ -2,9 +2,11 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Heart, Menu } from "lucide-react";
 import { useState } from "react";
+import { useSmartRedirect } from "@/hooks/useSmartRedirect";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { handleRedirect, isChecking } = useSmartRedirect();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
@@ -33,16 +35,22 @@ const Navbar = () => {
 
           {/* Desktop Buttons */}
           <div className="hidden md:flex items-center gap-4">
-            <Link to="/auth">
-              <Button variant="ghost" className="text-foreground">
-                Log In
-              </Button>
-            </Link>
-            <Link to="/auth">
-              <Button variant="default" className="bg-primary hover:bg-primary/90">
-                Get Started
-              </Button>
-            </Link>
+            <Button 
+              variant="ghost" 
+              className="text-foreground"
+              onClick={handleRedirect}
+              disabled={isChecking}
+            >
+              Log In
+            </Button>
+            <Button 
+              variant="default" 
+              className="bg-primary hover:bg-primary/90"
+              onClick={handleRedirect}
+              disabled={isChecking}
+            >
+              Get Started
+            </Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -67,16 +75,22 @@ const Navbar = () => {
               Safety
             </a>
             <div className="pt-4 space-y-3">
-              <Link to="/auth">
-                <Button variant="ghost" className="w-full">
-                  Log In
-                </Button>
-              </Link>
-              <Link to="/auth">
-                <Button variant="default" className="w-full bg-primary hover:bg-primary/90">
-                  Get Started
-                </Button>
-              </Link>
+              <Button 
+                variant="ghost" 
+                className="w-full"
+                onClick={handleRedirect}
+                disabled={isChecking}
+              >
+                Log In
+              </Button>
+              <Button 
+                variant="default" 
+                className="w-full bg-primary hover:bg-primary/90"
+                onClick={handleRedirect}
+                disabled={isChecking}
+              >
+                Get Started
+              </Button>
             </div>
           </div>
         )}
