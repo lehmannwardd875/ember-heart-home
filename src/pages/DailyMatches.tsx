@@ -119,6 +119,9 @@ const DailyMatches = () => {
       return;
     }
 
+    // Reload to show updated status
+    await loadUserAndMatches();
+
     // Check for mutual interest
     const otherInterest = isUser1 ? match.user2_interest : match.user1_interest;
     if (interested && otherInterest === 'interested') {
@@ -128,15 +131,10 @@ const DailyMatches = () => {
           onClick: () => navigate(`/chat/${matchId}`),
         },
       });
-      // Reload matches to show "Start Chat" button
-      await loadUserAndMatches();
     } else if (interested) {
       toast.success('Interest recorded. We\'ll let you know if they\'re interested too!');
-      // Remove from view
-      setMatches(matches.filter((m) => m.id !== matchId));
     } else {
-      // Remove from view
-      setMatches(matches.filter((m) => m.id !== matchId));
+      toast.info('Noted. We won\'t show you this match again.');
     }
   };
 
@@ -241,11 +239,12 @@ const DailyMatches = () => {
             {matches.map((match) => {
               if (!match.otherProfile) return null;
 
-              const currentUserInterest = 
-                match.user1_id === user?.id ? match.user1_interest : match.user2_interest;
+              const isUser1 = match.user1_id === user?.id;
+              const currentUserInterest = isUser1 ? match.user1_interest : match.user2_interest;
+              const otherUserInterest = isUser1 ? match.user2_interest : match.user1_interest;
               
-              // Show pending matches and mutual interest matches
-              const showMatch = currentUserInterest === 'pending' || hasMutualInterest(match);
+              // Show matches where: user hasn't declined OR there's mutual interest
+              const showMatch = currentUserInterest !== 'not_interested' || hasMutualInterest(match);
               
               if (!showMatch) return null;
 
@@ -305,6 +304,51 @@ const DailyMatches = () => {
                             >
                               Start Chat
                             </Button>
+                          </div>
+                        ) : currentUserInterest === 'interested' && otherUserInterest === 'pending' ? (
+                          <div className="bg-copper/5 p-4 rounded-lg border border-copper/20 text-center">
+                            <Badge variant="secondary" className="mb-2">
+                              Waiting for their response
+                            </Badge>
+                            <p className="text-sm text-warm-gray">
+                              We'll notify you if they're interested too
+                            </p>
+                          </div>
+                        ) : currentUserInterest === 'pending' && otherUserInterest === 'interested' ? (
+                          <div className="space-y-4 pt-4">
+                            <div className="bg-copper/5 p-4 rounded-lg border border-copper/20 text-center">
+                              <Badge variant="secondary" className="mb-2">
+                                ❤️ They're interested in you!
+                              </Badge>
+                              <p className="text-sm text-warm-gray">
+                                Would you like to connect?
+                              </p>
+                            </div>
+                            <div className="flex gap-4">
+                              <Button
+                                variant="outline"
+                                size="lg"
+                                onClick={() => handleInterest(match.id, false)}
+                                disabled={actionLoading === match.id}
+                                className="flex-1"
+                              >
+                                <X className="w-5 h-5 mr-2" />
+                                Not now
+                              </Button>
+                              <Button
+                                size="lg"
+                                onClick={() => handleInterest(match.id, true)}
+                                disabled={actionLoading === match.id}
+                                className="flex-1"
+                              >
+                                {actionLoading === match.id ? (
+                                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                                ) : (
+                                  <Heart className="w-5 h-5 mr-2" />
+                                )}
+                                Yes, I'm interested
+                              </Button>
+                            </div>
                           </div>
                         ) : (
                           <div className="flex gap-4 pt-4">
