@@ -8,11 +8,17 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
+  console.log('=== MATCH GENERATION REQUEST RECEIVED ===');
+  console.log('Method:', req.method);
+  console.log('Headers:', Object.fromEntries(req.headers.entries()));
+
   if (req.method === 'OPTIONS') {
+    console.log('Handling OPTIONS request');
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    console.log('Creating Supabase client...');
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
@@ -115,7 +121,9 @@ serve(async (req) => {
         // Ensure user1_id < user2_id to prevent duplicates
         const [user1, user2] = [user.user_id, match.user_id].sort();
         
-        const { error: insertError } = await supabase.from('matches').insert({
+        console.log(`Attempting to insert match: ${user1} <-> ${user2}, score: ${match.score}`);
+        
+        const { data: insertData, error: insertError } = await supabase.from('matches').insert({
           user1_id: user1,
           user2_id: user2,
           match_score: match.score,
@@ -124,33 +132,39 @@ serve(async (req) => {
           user2_interest: 'pending',
           mutual_values: [],
           shared_reflections: [],
-        });
+        }).select();
 
         if (insertError) {
-          // Might fail if match already exists (from other direction), which is fine
-          console.log(`Could not create match: ${insertError.message}`);
+          console.error(`Failed to create match: ${insertError.message}`, insertError);
         } else {
+          console.log(`✓ Match created successfully:`, insertData);
           matchesCreated++;
         }
       }
     }
 
-    console.log(`Match generation complete. Created ${matchesCreated} matches.`);
+    console.log(`=== Match generation complete. Created ${matchesCreated} matches for ${users?.length || 0} users ===`);
 
     return new Response(
       JSON.stringify({ 
         success: true, 
         matchesCreated,
-        usersProcessed: users?.length || 0 
+        usersProcessed: users?.length || 0,
+        message: `Successfully created ${matchesCreated} matches`
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
       }
     );
   } catch (error) {
-    console.error('Matching error:', error);
+    console.error('=== FATAL ERROR in match generation ===', error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
+      JSON.stringify({ 
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined
+      }),
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

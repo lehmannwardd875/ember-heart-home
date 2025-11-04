@@ -202,15 +202,31 @@ const DailyMatches = () => {
                   </Button>
                   <Button
                     onClick={async () => {
+                      console.log('=== Starting match generation ===');
                       toast.info('Generating today\'s matches...');
                       try {
-                        const { error } = await supabase.functions.invoke('generate-daily-matches');
-                        if (error) throw error;
-                        toast.success('Matches generated! Refreshing...');
+                        const { data, error } = await supabase.functions.invoke('generate-daily-matches', {
+                          body: {}
+                        });
+                        
+                        console.log('Function response:', { data, error });
+                        
+                        if (error) {
+                          console.error('Function returned error:', error);
+                          throw error;
+                        }
+                        
+                        const result = data as { success: boolean; matchesCreated: number; message?: string };
+                        
+                        if (!result.success) {
+                          throw new Error(result.message || 'Match generation failed');
+                        }
+                        
+                        toast.success(`${result.matchesCreated} matches created! Refreshing...`);
                         await loadUserAndMatches();
                       } catch (error) {
                         console.error('Error generating matches:', error);
-                        toast.error('Could not generate matches. Please try again later.');
+                        toast.error(`Could not generate matches: ${error instanceof Error ? error.message : 'Unknown error'}`);
                       }
                     }}
                   >
