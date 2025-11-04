@@ -95,6 +95,18 @@ const DailyMatches = () => {
     return match.user1_interest === 'interested' && match.user2_interest === 'interested';
   };
 
+  const shouldShowMatch = (match: Match, currentUserId: string): boolean => {
+    const isUser1 = match.user1_id === currentUserId;
+    const myInterest = isUser1 ? match.user1_interest : match.user2_interest;
+    const theirInterest = isUser1 ? match.user2_interest : match.user1_interest;
+
+    return (
+      myInterest === 'pending' ||         // I haven't responded yet
+      theirInterest === 'interested' ||   // They are interested in me
+      hasMutualInterest(match)            // We both are interested
+    );
+  };
+
   const handleInterest = async (matchId: string, interested: boolean) => {
     if (!user) return;
 
@@ -106,6 +118,7 @@ const DailyMatches = () => {
     const isUser1 = match.user1_id === user.id;
     const updateField = isUser1 ? 'user1_interest' : 'user2_interest';
     const interestValue = interested ? 'interested' : 'not_interested';
+    const otherUserId = isUser1 ? match.user2_id : match.user1_id;
 
     const { error } = await supabase
       .from('matches')
@@ -117,6 +130,24 @@ const DailyMatches = () => {
     if (error) {
       toast.error('Could not update interest');
       return;
+    }
+
+    // Send email notification to the other person if interested
+    if (interested && otherUserId && match.otherProfile) {
+      try {
+        await supabase.functions.invoke('send-interest-notification', {
+          body: {
+            recipientUserId: otherUserId,
+            recipientName: match.otherProfile.full_name,
+            interestedUserName: user.email || 'Someone',
+            matchId: matchId,
+          },
+        });
+        console.log('Interest notification email sent');
+      } catch (emailError) {
+        console.error('Failed to send interest notification:', emailError);
+        // Don't block the flow if email fails
+      }
     }
 
     // Reload to show updated status
@@ -243,10 +274,8 @@ const DailyMatches = () => {
               const currentUserInterest = isUser1 ? match.user1_interest : match.user2_interest;
               const otherUserInterest = isUser1 ? match.user2_interest : match.user1_interest;
               
-              // Show matches where: user hasn't declined OR there's mutual interest
-              const showMatch = currentUserInterest !== 'not_interested' || hasMutualInterest(match);
-              
-              if (!showMatch) return null;
+              // Use the new shouldShowMatch logic
+              if (!shouldShowMatch(match, user?.id)) return null;
 
               return (
                 <Card key={match.id} className="overflow-hidden border-copper/20 shadow-lg">
@@ -262,6 +291,11 @@ const DailyMatches = () => {
                         <Badge variant="secondary" className="mt-4">
                           Verified ✓
                         </Badge>
+                        {otherUserInterest === 'interested' && currentUserInterest === 'pending' && (
+                          <Badge className="mt-2 bg-sage text-white">
+                            💌 Interested in You
+                          </Badge>
+                        )}
                       </div>
 
                       <div className="flex-1 space-y-4">
