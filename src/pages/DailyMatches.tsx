@@ -79,10 +79,14 @@ const DailyMatches = () => {
           .order('created_at', { ascending: false })
           .limit(1);
 
+        const reflectionText = reflections?.[0]?.response;
+        
         return {
           ...match,
           otherProfile: profile,
-          sharedReflection: reflections?.[0]?.response?.substring(0, 150) + '...',
+          sharedReflection: reflectionText 
+            ? reflectionText.substring(0, 150) + '...' 
+            : null,
         };
       })
     );
@@ -100,11 +104,13 @@ const DailyMatches = () => {
     const myInterest = isUser1 ? match.user1_interest : match.user2_interest;
     const theirInterest = isUser1 ? match.user2_interest : match.user1_interest;
 
-    return (
-      myInterest === 'pending' ||         // I haven't responded yet
-      theirInterest === 'interested' ||   // They are interested in me
-      hasMutualInterest(match)            // We both are interested
-    );
+    // Hide only if either party has declined
+    if (myInterest === 'not_interested' || theirInterest === 'not_interested') {
+      return false;
+    }
+    
+    // Show in all other cases (pending or interested)
+    return true;
   };
 
   const handleInterest = async (matchId: string, interested: boolean) => {
@@ -314,16 +320,14 @@ const DailyMatches = () => {
                           </p>
                         </div>
 
-                        {match.sharedReflection && (
-                          <div className="bg-sage/5 p-4 rounded-lg border-l-4 border-sage">
-                            <p className="text-sm text-warm-gray mb-2 font-medium">
-                              From their reflection:
-                            </p>
-                            <p className="text-text-dark leading-relaxed">
-                              {match.sharedReflection}
-                            </p>
-                          </div>
-                        )}
+                        <div className="bg-sage/5 p-4 rounded-lg border-l-4 border-sage">
+                          <p className="text-sm text-warm-gray mb-2 font-medium">
+                            From their reflection:
+                          </p>
+                          <p className="text-text-dark leading-relaxed">
+                            {match.sharedReflection || "This user hasn't written a reflection yet."}
+                          </p>
+                        </div>
 
                         {hasMutualInterest(match) ? (
                           <div className="flex gap-4 pt-4">
