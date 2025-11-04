@@ -13,8 +13,11 @@ export const useSmartRedirect = () => {
       // Check if user is logged in
       const { data: { user } } = await supabase.auth.getUser();
       
+      console.log('🔍 Smart Redirect - User check:', user ? 'Logged in' : 'Not logged in');
+      
       if (!user) {
         // Not logged in → go to auth page (handles both login and signup)
+        console.log('➡️ Redirecting to /auth (no user)');
         navigate('/auth');
         return;
       }
@@ -35,8 +38,11 @@ export const useSmartRedirect = () => {
       // Check if verified (has selfie and video)
       const isVerified = !!(profile.selfie_url && profile.video_intro_url);
       
+      console.log('🔍 Verification status:', isVerified ? 'Verified' : 'Not verified');
+      
       if (!isVerified) {
         // Not verified → go to verification
+        console.log('➡️ Redirecting to /verify (not verified)');
         navigate('/verify');
         return;
       }
@@ -44,13 +50,17 @@ export const useSmartRedirect = () => {
       // Check if profile is complete (basic fields filled)
       const hasBasicProfile = profile.profession && profile.life_focus && profile.reflection;
       
+      console.log('🔍 Profile complete:', hasBasicProfile ? 'Yes' : 'No');
+      
       if (!hasBasicProfile) {
         // Verified but profile not complete → go to profile creation
+        console.log('➡️ Redirecting to /profile/create (incomplete profile)');
         navigate('/profile/create');
         return;
       }
 
       // Everything complete → go to matches
+      console.log('➡️ Redirecting to /matches (all complete)');
       navigate('/matches');
       
     } catch (error) {
