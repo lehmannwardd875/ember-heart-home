@@ -187,19 +187,36 @@ const DailyMatches = () => {
             <CardContent>
               <div className="space-y-4">
                 <p className="text-2xl font-serif text-text-dark">
-                  Come back tomorrow
+                  No introductions today yet
                 </p>
                 <p className="text-warm-gray text-lg max-w-md mx-auto">
                   We're carefully considering who to introduce you to next. 
                   Meaningful connections take time to cultivate.
                 </p>
-                <Button
-                  onClick={() => navigate('/reflection')}
-                  variant="outline"
-                  className="mt-6"
-                >
-                  Write a Reflection
-                </Button>
+                <div className="flex gap-4 justify-center mt-6">
+                  <Button
+                    onClick={() => navigate('/reflection')}
+                    variant="outline"
+                  >
+                    Write a Reflection
+                  </Button>
+                  <Button
+                    onClick={async () => {
+                      toast.info('Generating today\'s matches...');
+                      try {
+                        const { error } = await supabase.functions.invoke('generate-daily-matches');
+                        if (error) throw error;
+                        toast.success('Matches generated! Refreshing...');
+                        await loadUserAndMatches();
+                      } catch (error) {
+                        console.error('Error generating matches:', error);
+                        toast.error('Could not generate matches. Please try again later.');
+                      }
+                    }}
+                  >
+                    Generate Today's Matches
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>

@@ -25,7 +25,7 @@ export const useSmartRedirect = () => {
       // User is logged in, check verification status
       const { data: profile } = await supabase
         .from('profiles')
-        .select('selfie_url, video_intro_url, verified, profession, life_focus, reflection')
+        .select('selfie_url, video_intro_url, verified, profession, life_focus, reflection, taste_cards')
         .eq('user_id', user.id)
         .maybeSingle();
 
@@ -47,10 +47,23 @@ export const useSmartRedirect = () => {
         return;
       }
 
-      // Check if profile is complete (basic fields filled)
-      const hasBasicProfile = profile.profession && profile.life_focus && profile.reflection;
+      // Check if profile is complete (basic fields filled + taste cards)
+      const hasTasteCards = profile.taste_cards && 
+        typeof profile.taste_cards === 'object' &&
+        Object.keys(profile.taste_cards).length > 0;
+      
+      const hasBasicProfile = profile.profession && 
+        profile.life_focus && 
+        profile.reflection &&
+        hasTasteCards;
       
       console.log('🔍 Profile complete:', hasBasicProfile ? 'Yes' : 'No');
+      console.log('🔍 Profile data:', { 
+        hasProfession: !!profile.profession, 
+        hasLifeFocus: !!profile.life_focus, 
+        hasReflection: !!profile.reflection,
+        hasTasteCards 
+      });
       
       if (!hasBasicProfile) {
         // Verified but profile not complete → go to profile creation

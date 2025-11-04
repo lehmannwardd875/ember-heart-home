@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -32,6 +32,7 @@ const ProfileBuilder = () => {
   const [section, setSection] = useState<Section>(1);
   const [showPreview, setShowPreview] = useState(false);
   const [publishing, setPublishing] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   // Form fields
   const [profession, setProfession] = useState("");
@@ -46,6 +47,46 @@ const ProfileBuilder = () => {
   const [newFilm, setNewFilm] = useState("");
   const [newMusic, setNewMusic] = useState("");
   const [newInspiration, setNewInspiration] = useState("");
+
+  // Load existing profile data on mount
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          setLoading(false);
+          return;
+        }
+
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('profession, education, life_focus, reflection, taste_cards')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (profile) {
+          setProfession(profile.profession || "");
+          setEducation(profile.education || "");
+          setLifeFocus(profile.life_focus || "");
+          setReflection(profile.reflection || "");
+          
+          if (profile.taste_cards) {
+            const tc = profile.taste_cards as any;
+            setBooks(tc.books || []);
+            setFilms(tc.films || []);
+            setMusic(tc.music || []);
+            setInspiration(tc.inspiration || []);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading profile:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadProfile();
+  }, []);
 
   const progressValue = (section / 5) * 100;
 
@@ -530,6 +571,17 @@ const ProfileBuilder = () => {
         );
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-ivory flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="text-muted-foreground">Loading your profile...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
