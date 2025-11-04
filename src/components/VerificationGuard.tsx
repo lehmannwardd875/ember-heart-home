@@ -12,12 +12,14 @@ export const VerificationGuard = ({ children }: VerificationGuardProps) => {
   const { isVerified, loading } = useVerificationStatus(userId);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
       setUserId(user?.id);
-    });
+    };
+    checkAuth();
   }, []);
 
-  if (loading) {
+  if (loading || !userId) {
     return (
       <div className="min-h-screen bg-gradient-subtle flex items-center justify-center">
         <div className="text-center space-y-4 animate-fade-in">
@@ -26,6 +28,11 @@ export const VerificationGuard = ({ children }: VerificationGuardProps) => {
         </div>
       </div>
     );
+  }
+
+  // If user not authenticated, redirect to auth
+  if (!userId) {
+    return <Navigate to="/auth" replace />;
   }
 
   // If not verified, redirect to verification page

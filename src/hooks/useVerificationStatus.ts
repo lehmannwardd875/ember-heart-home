@@ -18,14 +18,17 @@ export const useVerificationStatus = (userId: string | undefined) => {
           .from('profiles')
           .select('selfie_url, video_intro_url')
           .eq('user_id', userId)
-          .single();
+          .maybeSingle();
 
         if (error) {
           console.error('Error checking verification:', error);
           setIsVerified(false);
+        } else if (!data) {
+          // No profile exists yet
+          setIsVerified(false);
         } else {
           // User is verified if they have both selfie and video uploaded
-          setIsVerified(!!(data?.selfie_url && data?.video_intro_url));
+          setIsVerified(!!(data.selfie_url && data.video_intro_url));
         }
       } catch (err) {
         console.error('Verification check failed:', err);

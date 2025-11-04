@@ -24,7 +24,7 @@ export const useSmartRedirect = () => {
         .from('profiles')
         .select('selfie_url, video_intro_url, verified, profession, life_focus, reflection')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (!profile) {
         // No profile yet (shouldn't happen with trigger, but safety check)
