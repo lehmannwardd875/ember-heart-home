@@ -14,7 +14,7 @@ export const useSmartRedirect = () => {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        // Not logged in → go to auth page
+        // Not logged in → go to auth page (handles both login and signup)
         navigate('/auth');
         return;
       }

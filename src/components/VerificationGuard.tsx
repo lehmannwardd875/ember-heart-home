@@ -19,7 +19,24 @@ export const VerificationGuard = ({ children }: VerificationGuardProps) => {
     checkAuth();
   }, []);
 
-  if (loading || !userId) {
+  // If user not authenticated, redirect to auth immediately
+  if (userId === undefined) {
+    return (
+      <div className="min-h-screen bg-gradient-subtle flex items-center justify-center">
+        <div className="text-center space-y-4 animate-fade-in">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="text-muted-foreground text-lg">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!userId) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  // Now check verification status
+  if (loading) {
     return (
       <div className="min-h-screen bg-gradient-subtle flex items-center justify-center">
         <div className="text-center space-y-4 animate-fade-in">
@@ -28,11 +45,6 @@ export const VerificationGuard = ({ children }: VerificationGuardProps) => {
         </div>
       </div>
     );
-  }
-
-  // If user not authenticated, redirect to auth
-  if (!userId) {
-    return <Navigate to="/auth" replace />;
   }
 
   // If not verified, redirect to verification page
